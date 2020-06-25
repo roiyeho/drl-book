@@ -1,18 +1,10 @@
-import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import tensorflow as tf
 from tensorflow import keras
 import tensorflow.keras.layers as layers
 
-# Setting random seed
-SEED = 0
-random.seed(SEED)
-np.random.seed(SEED)
-tf.random.set_seed(SEED)
-
-# Load the Cifar10 dataset
+# Load the CIFAR-10 dataset
 (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
@@ -51,8 +43,7 @@ plt.show()
 
 # Evaluate the model on the test set
 results = model.evaluate(x_test, y_test)
-results = np.round(results, 4)
-print(f'Test loss: {results[0]}, test accuracy: {results[1]}')
+print(f'Test accuracy: {np.round(results[1], 4)}')
 
 # Using the model to make predictions
 x_new = x_test[:5]

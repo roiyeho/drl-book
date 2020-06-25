@@ -1,10 +1,11 @@
-"""Implementing an MLP (multi-layer perceptron) using TensorFlow 2.0 and Keras
+"""Implementing an MLP (multi-layer perceptron) on CIFAR-10 using TensorFlow 2.0 and Keras
     Author: Roi Yehoshua
     Date: June 2020
 """
 import numpy as np
 from tensorflow import keras
 import tensorflow.keras.layers as layers
+
 import plot_utils
 
 # Load the CIFAR-10 dataset
@@ -59,8 +60,7 @@ plot_utils.plot_learning_curve(training_acc=history.history['accuracy'],
 
 # Evaluate the model on the test set
 results = model.evaluate(x_test, y_test)
-results = np.round(results, 4)
-print(f'Test loss: {results[0]}, test accuracy: {results[1]}')
+print(f'Test accuracy: {np.round(results[1], 4)}')
 
 # Using the model to make predictions
 y_prob = model.predict(x_test[:5])

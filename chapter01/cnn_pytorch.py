@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import time
 
-# Loading the data
+# Load the data
 transform = transforms.ToTensor()
 train_set = torchvision.datasets.CIFAR10(root='data', train=True, download=True, transform=transform)
 test_set = torchvision.datasets.CIFAR10(root='data', train=False, download=True, transform=transform)
