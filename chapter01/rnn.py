@@ -1,8 +1,8 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from tensorflow import keras
 import tensorflow.keras.layers as layers
+
+import plot_utils
 
 # Load the CIFAR-10 dataset
 (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
@@ -34,21 +34,15 @@ model.compile(loss='sparse_categorical_crossentropy',
 history = model.fit(x_train, y_train, epochs=30, validation_split=0.1)
 
 # Plot the learning curve
-pd.DataFrame(history.history).plot(figsize=(8, 5), fontsize=18)
-plt.grid(True)
-plt.xlabel('Epoch', fontsize=20)
-plt.legend(fontsize=18)
-plt.title('RNN for CIFAR-10 Classification', fontsize=20)
-plt.show()
+plot_utils.plot_learning_curve(training_acc=history.history['accuracy'],
+                               validation_acc=history.history['val_accuracy'],
+                               file_name='rnn_learning_curve')
 
 # Evaluate the model on the test set
 results = model.evaluate(x_test, y_test)
 print(f'Test accuracy: {np.round(results[1], 4)}')
 
 # Using the model to make predictions
-x_new = x_test[:5]
-y_prob = model.predict(x_new)
-print(y_prob.round(3))
-
-y_pred = model.predict_classes(x_new)
-print(y_pred)
+y_pred = model.predict_classes(x_test[:5])
+plot_utils.plot_predictions(x_test[:5], class_names, y_test[:5],
+                            y_pred, file_name='rnn_predictions')
