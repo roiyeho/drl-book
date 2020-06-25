@@ -21,7 +21,7 @@ print(dict(zip(unique, counts)))
 class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
 # Plot the first 50 images from the training set
-plot_utils.plot_training_images(x_train[:50], class_names, y_train[:50], file_name='CIFAR-10')
+plot_utils.plot_images(x_train[:50], class_names, y_train[:50], file_name='cifar-10')
 
 # Scale the data
 x_train = x_train / 255.0

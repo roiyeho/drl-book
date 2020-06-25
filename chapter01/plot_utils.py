@@ -4,7 +4,7 @@
 """
 import matplotlib.pyplot as plt
 
-def plot_training_images(images, class_names, labels, file_name, n_cols=10):
+def plot_images(images, class_names, labels, file_name, n_cols=10):
     """Plot a sample of images from the training set
     :param images: the set of images
     :param class_names: mapping from class indices to names
@@ -19,7 +19,7 @@ def plot_training_images(images, class_names, labels, file_name, n_cols=10):
     for ax in axes.flat:
         ax.imshow(images[k])
         ax.axis('off')
-        ax.set_title(class_names[labels[k][0]], fontsize=16)
+        ax.set_title(class_names[labels[k][0]], fontsize=16)  # each label is a 1D vector of size 1
         k += 1
     plt.savefig(f'figures/{file_name}.png')
     plt.close()
