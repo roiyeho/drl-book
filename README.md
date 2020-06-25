@@ -1,2 +1,2 @@
 # drl-book
-Code for Deep Reinforcement Learning book
+Code for the book Deep Reinforcement Learning: Theory and Practice (coming out soon)
