@@ -36,7 +36,7 @@ history = model.fit(x_train, y_train, epochs=30, validation_split=0.1)
 # Plot the learning curve
 plot_utils.plot_learning_curve(training_acc=history.history['accuracy'],
                                validation_acc=history.history['val_accuracy'],
-                               file_name='rnn_learning_curve')
+                               file_name='gru_learning_curve')
 
 # Evaluate the model on the test set
 results = model.evaluate(x_test, y_test)
@@ -45,4 +45,4 @@ print(f'Test accuracy: {np.round(results[1], 4)}')
 # Using the model to make predictions
 y_pred = model.predict_classes(x_test[:5])
 plot_utils.plot_predictions(x_test[:5], class_names, y_test[:5],
-                            y_pred, file_name='rnn_predictions')
+                            y_pred, file_name='gru_predictions')
