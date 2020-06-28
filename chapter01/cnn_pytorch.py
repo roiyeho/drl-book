@@ -64,17 +64,29 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters())
 
 def evaluate_model(model, data_loader):
-    correct = 0
-    total = 0
-    with torch.no_grad():
+    """
+    :param model: the model to evaluate
+    :param data_loader: an iterator over the data
+    :return: percentage of correct model predictions
+    """
+    correct, total = 0, 0
+
+    with torch.no_grad():  # disable gradient calculation
+        # Iterate over the data
         for data in data_loader:
+            # Move the data tensors to the GPU
             x, y = data[0].to(device), data[1].to(device)
+
+            # Compute the model predictions for the inputs
             output = model(x)
             _, y_pred = torch.max(output.data, 1)
+
+            # Add the number of correct predictions
             total += y.size(0)
             correct += (y_pred == y).sum().item()
     return correct / total
 
+# Store statistics during the training
 train_history = []
 val_history = []
 
@@ -83,21 +95,21 @@ for epoch in range(30):
     start_time = time.time()
     running_loss = 0.0
 
+    # Iterate over the data, one batch at time
     for i, data in enumerate(train_loader, 0):
-        # data is a list of [inputs, labels]
+        # Move the data tensors to the GPU
         x_train, y_train = data[0].to(device), data[1].to(device)
 
-        # Zero the parameter gradients
+        # Initialize the gradients
         optimizer.zero_grad()
 
-        # Forward pass: compute the predicted label for the input tensor
+        # Compute the predicted label for the input tensor
         y_pred = model(x_train)
 
         # Compute the loss
         loss = loss_fn(y_pred, y_train)
 
-        # Backward pass: compute the gradient of the loss with respect to the
-        # network parameters
+        # Compute the gradient of the loss with respect to the network parameters
         loss.backward()
 
         # Update the model's parameters using one step of gradient descent
@@ -109,14 +121,19 @@ for epoch in range(30):
             print(f'Epoch: {epoch + 1}, iteration: {i + 1}, loss: {running_loss / 100:.4f}')
             running_loss = 0.0
 
+    # Evaluate the model on the training and validation sets at the end of each epoch
     train_accuracy = evaluate_model(model, train_loader)
     train_history.append(train_accuracy)
     val_accuracy = evaluate_model(model, validation_loader)
     val_history.append(val_accuracy)
     elapsed_time = time.time() - start_time
 
+    print('=' * 80)
     print(f'Epoch {epoch + 1} completed in {elapsed_time:.2f} sec, '
-          f'accuracy: {train_accuracy:.4f}, validation accuracy: {val_accuracy:.4f}')
+          f'accuracy: {train_accuracy:.4f}, val accuracy: {val_accuracy:.4f}')
+    print('=' * 80)
+
+print('Finished training\n')
 
 # Plot the learning curve
 plot_utils.plot_learning_curve(training_acc=train_history,
