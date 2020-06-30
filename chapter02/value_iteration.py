@@ -1,34 +1,55 @@
-def value_iteration(mdp, epsilon=0.01):
-    """Solving an MDP by value iteration."""
-    V1 = {s: 0 for s in mdp.states}
-    R, T, gamma = mdp.R, mdp.T, mdp.gamma
+# Author: Roi Yehoshua
+# Date: June 2020
 
-    i = 0
-    while True:
-        V = V1.copy()
-        delta = 0
+class ValueIteration:
+    """Implement the value iteration algorithm for solving an MDP"""
+    def __init__(self, mdp, gamma=0.95, epsilon=0.001):
+        """
+        :param mdp: an instance of the MDP class
+        :param gamma: discount factor
+        :param epsilon:
+        """
+        self.mdp = mdp
+        self.gamma = gamma
+        self.epsilon = epsilon
 
-        for s in mdp.states:
-            if s not in mdp.terminals:  # The values of terminal states remain 0
-                V1[s] = max(sum(p * (R(s, a, s1) + gamma * V[s1]) for (p, s1) in T(s, a))
-                            for a in mdp.actions)
-                delta = max(delta, abs(V1[s] - V[s]))
+        # Initialize the V table
+        self.V = {s: 0 for s in mdp.states}
 
-        i += 1
-        print(f'Iteration {i}, delta: {delta:.6f}')
-        if delta < epsilon:
-            return V
+    def run(self):
+        """Run VI to find the optimal value function"""
+        R, T = self.mdp.R, self.mdp.T
 
-def best_policy(mdp, V):
-    """Given an MDP and a value function V, determine the best policy,
-        as a mapping from state to action."""
-    pi = {}
-    for s in mdp.states:
-        pi[s] = max(mdp.actions, key=lambda a: expected_return(s, a, mdp, V))
-    return pi
+        i = 0
+        while True:
+            V_copy = self.V.copy()
+            delta = 0
 
-def expected_return(s, a, mdp, V):
-    """The expected return of taking action a in state s, according to the MDP and V."""
-    return sum(p * (mdp.R(s, a, s1) + mdp.gamma * V[s1]) for (p, s1) in mdp.T(s, a))
+            for state in self.mdp.states:
+                if state not in self.mdp.terminal_states:  # The values of terminal states remain 0
+                    self.V[state] = max(sum(prob * (R(state, action, next_state) + self.gamma * V_copy[next_state])
+                                            for (prob, next_state) in T(state, action)) for action in self.mdp.actions)
+                    delta = max(delta, abs(self.V[state] - V_copy[state]))
+
+            i += 1
+            print(f'Iteration {i}, delta: {delta:.6f}')
+            if delta < self.epsilon:
+                break
+
+    def get_best_policy(self):
+        """Return the policy induced by the calculated V table"""
+        policy = {}
+        for state in self.mdp.states:
+            policy[state] = max(self.mdp.actions,
+                                key=lambda action: self.expected_return(state, action))
+        return policy
+
+    def expected_return(self, state, action):
+        """Compute the expected return of taking action a in state s"""
+        return sum(prob * (self.mdp.R(state, action, next_state) + self.gamma * self.V[next_state])
+                   for (prob, next_state) in self.mdp.T(state, action))
+
+
+
 
 

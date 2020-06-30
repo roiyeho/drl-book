@@ -1,48 +1,37 @@
+# Author: Roi Yehoshua
+# Date: June 2020
+
 import numpy as np
-from grid_world import GridMDP
-from value_iteration import value_iteration, best_policy
+from grid_world import GridWorld
+from value_iteration import ValueIteration
 
-def print_values(V, grid):
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i, j]:
-                print(f'{V[(i, j)]:.3f} ', end='')
-            else:
-                s = '-'
-                print(f'{s:^7}', end='')
-        print()
+# Define the grid cells
+grid = np.zeros((5, 5))
 
-def print_policy(pi, grid):
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i, j]:
-                if pi[i, j] == (0, 1):
-                    print('→', end='')
-                elif pi[i, j] == (0, -1):
-                    print('←', end='')
-                elif pi[i, j] == (-1, 0):
-                    print('↑', end='')
-                elif pi[i, j] == (1, 0):
-                    print('↓', end='')
-            else:
-                print(' ', end='')
-        print()
+# Set obstacles
+grid[1, 1], grid[3, 3] = 1, 1
 
-if __name__ == '__main__':
-    # Define the grid world according to the example given in the text
-    grid = np.ones((3, 4))
-    grid[1, 1] = 0  # Obstacle
-    terminals = [(0, 3), (1, 3)]
-    rewards = {terminals[0]: -25, terminals[1]: +25}
-    mdp = GridMDP(grid, initial_state=(0, 0), terminals=terminals,
-                  rewards=rewards)
+# Define the terminal rewards
+terminal_rewards = {
+    (2, 4): 1,   # gold
+    (1, 4): -1,  # pit
+    (3, 1): -1   # pit
+}
 
-    epsilon = 0.01
-    print(f'Running value iteration with eps={epsilon}')
-    V = value_iteration(mdp, epsilon)
-    print('\nFinal state values:')
-    print_values(V, grid)
+# Create the grid MDP
+grid_mdp = GridWorld(grid, initial_state=(0, 0), terminal_rewards=terminal_rewards)
+grid_mdp.render()
 
-    pi = best_policy(mdp, V)
-    print('Best policy:')
-    print_policy(pi, grid)
+# Run value iteration
+vi = ValueIteration(grid_mdp)
+print(f'Running value iteration')
+vi.run()
+print('\nFinal V table:')
+grid_mdp.print_values(vi.V)
+
+# Print the optimal policy
+policy = vi.get_best_policy()
+print('\nBest policy:')
+grid_mdp.print_policy(policy)
+
+
