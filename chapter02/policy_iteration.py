@@ -16,10 +16,9 @@ class PolicyIteration:
         self.epsilon = epsilon
 
     def run(self):
-        """Run policy iteration to find the optimal policy"""
-
         # Initialize the policy with random actions
-        self.policy = {state: np.random.randint(len(self.mdp.actions)) for state in self.mdp.states}
+        self.policy = {state: np.random.randint(len(self.mdp.actions))
+                       for state in self.mdp.states}
 
         # Run policy evaluation and improvement steps until no change of the policy is detected
         policy_changed = True
@@ -65,12 +64,3 @@ class PolicyIteration:
                     changed = True
                     self.policy[state] = new_action
         return changed
-
-    def plot_learning_curve(self):
-        x = range(1, len(self.deltas) + 1)
-        plt.plot(x, self.deltas)
-        plt.xlabel('Iteration', fontsize=12)
-        plt.ylabel('Delta', fontsize=12)
-        plt.xticks(x)
-        plt.savefig(f'figures/vi_learning_curve.png')
-        plt.close()

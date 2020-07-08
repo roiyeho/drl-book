@@ -15,7 +15,6 @@ class ValueIteration:
         self.epsilon = epsilon
 
     def run(self):
-        """Run VI to find the optimal value function"""
         R, T = self.mdp.R, self.mdp.T  # Use shorter names
 
         # Initialize the V table
