@@ -1,16 +1,14 @@
 # Author: Roi Yehoshua
 # Date: June 2020
 
-import operator
 from collections import defaultdict
-
 from mdp import MDP
 
 class GridWorld(MDP):
-    """Implement the grid world example described in the book"""
-    def __init__(self, grid, initial_state, terminal_rewards, living_reward=-0.1):
+    """Define a grid world environment"""
+    def __init__(self, grid, initial_state, terminal_rewards, living_reward):
         """
-        :param grid: a matrix of cells, each cell can be occupied (1) or free (0)
+        :param grid: a matrix of cells, which can be free (0) or blocked (1)
         :param initial_state: the initial location of the agent
         :param terminal_rewards: a dictionary of (terminal state, reward)
         :param living_reward: a small negative cost for each action
@@ -25,45 +23,49 @@ class GridWorld(MDP):
         # A dictionary that maps actions to directions (dx, dy)
         self.directions = {
             0: (-1, 0),  # North
-            1: (0, 1),  # East
-            2: (1, 0),  # South
+            1: (0, 1),   # East
+            2: (1, 0),   # South
             3: (0, -1),  # West
         }
 
-        super().__init__(states=states, actions=list(self.directions.keys()),
-                         initial_state=initial_state, terminal_states=list(terminal_rewards.keys()))
+        super().__init__(states=states,
+                         actions=list(self.directions.keys()),
+                         initial_state=initial_state,
+                         terminal_states=list(terminal_rewards.keys()))
         self.transitions = defaultdict(lambda: {})  # A cache for storing computed transitions
 
     def generate_states(self):
-        """Every free cell in the grid is a possible state.
+        """Create a list of possible states from the empty cells in the grid
         :return: a list of states
         """
         states = []
 
         for i in range(self.rows):
             for j in range(self.cols):
-                if self.grid[i, j] == 0:   # Check if this is a free (zero) cell
+                if self.grid[i, j] == 0:   # Check if this is a free cell
                     states.append((i, j))
         return states
 
     def T(self, state, action):
         """Implement the transition function. The agent moves to its intended direction with
-        probability 0.8, and with probability 0.2 moves to one of the two perpendicular directions.
+        probability 0.8, and with probability 0.2 moves to one of its two perpendicular directions.
         :return: list of (probability, next_state) tuples
         """
-        # Check if the transitions are already in the cache
+        # Verify that state is not terminal
+        if state in self.terminal_states:
+            raise ValueError('There are no transitions from a terminal state')
+
+        # Check if the (state, action) pair is in the cache
         if state in self.transitions and action in self.transitions[state]:
             return self.transitions[state][action]
 
-        if state not in self.terminal_states:
-            turn_right = self.actions[(action + 1) % len(self.actions)]
-            turn_left = self.actions[(action - 1) % len(self.actions)]
+        # Compute the possible transitions from (state, action)
+        turn_right = self.actions[(action + 1) % len(self.actions)]
+        turn_left = self.actions[(action - 1) % len(self.actions)]
 
-            transitions = [(0.8, self.step(state, action)),
-                           (0.1, self.step(state, turn_right)),
-                           (0.1, self.step(state, turn_left))]
-        else:
-            transitions = [(0.0, state)]
+        transitions = [(0.8, self.step(state, action)),
+                       (0.1, self.step(state, turn_right)),
+                       (0.1, self.step(state, turn_left))]
 
         # Store the transitions in the cache
         self.transitions[state][action] = transitions
@@ -74,41 +76,22 @@ class GridWorld(MDP):
         direction = self.directions[action]
 
         # Add the state and the direction tuples element-wise
-        new_state = tuple(map(operator.add, state, direction))
+        from operator import add
+        new_state = tuple(map(add, state, direction))
 
-        # Check that the agent didn't move out of boundaries
+        # Check that the agent didn't move out of boundaries or into an obstacle
         if new_state in self.states:
             return new_state
         else:
             return state
 
     def R(self, state, action, next_state):
-        """Implement the reward function"""
+        """The reward function"""
         # Check if we have reached a terminal state
         if next_state in self.terminal_states:
             return self.terminal_rewards[next_state]
         else:
             return self.living_reward
-
-    def render(self, state=None):
-        """Print the given state of the grid world
-        :param state: if None, print the initial state
-        """
-        if state is None:
-            state = self.initial_state
-
-        for i in range(self.rows):
-            for j in range(self.cols):
-                if self.grid[i, j] != 0:
-                    print('X', end='')
-                else:
-                    if state == (i, j):
-                        print('A', end='')  # agent
-                    elif (i, j) in self.terminal_states:
-                        print('T', end='')
-                    else:
-                        print('.', end='')
-            print()
 
     def print_values(self, V):
         """Print the values table"""
@@ -122,9 +105,12 @@ class GridWorld(MDP):
             print()
 
     def print_policy(self, policy):
+        """Print the given policy"""
         for i in range(self.rows):
             for j in range(self.cols):
-                if self.grid[i, j] == 0:
+                if self.grid[i, j] != 0 or (i, j) in self.terminal_states:
+                    print(' ', end='')
+                else:
                     if policy[i, j] == 0:
                         print('↑', end='')
                     elif policy[i, j] == 1:
@@ -133,8 +119,6 @@ class GridWorld(MDP):
                         print('↓', end='')
                     elif policy[i, j] == 3:
                         print('←', end='')
-                else:
-                    print(' ', end='')
             print()
 
 

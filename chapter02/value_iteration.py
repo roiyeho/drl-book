@@ -1,13 +1,14 @@
 # Author: Roi Yehoshua
 # Date: June 2020
+import matplotlib.pyplot as plt
 
 class ValueIteration:
-    """Implement the value iteration algorithm for solving an MDP"""
+    """Implement the value iteration algorithm"""
     def __init__(self, mdp, gamma=0.95, epsilon=0.001):
         """
         :param mdp: an instance of the MDP class
         :param gamma: discount factor
-        :param epsilon:
+        :param epsilon: maximum error in an iteration
         """
         self.mdp = mdp
         self.gamma = gamma
@@ -20,6 +21,8 @@ class ValueIteration:
         """Run VI to find the optimal value function"""
         R, T = self.mdp.R, self.mdp.T
 
+        self.deltas = []  # Saves the delta in each iteration
+
         i = 0
         while True:
             V_copy = self.V.copy()
@@ -28,20 +31,32 @@ class ValueIteration:
             for state in self.mdp.states:
                 if state not in self.mdp.terminal_states:  # The values of terminal states remain 0
                     self.V[state] = max(sum(prob * (R(state, action, next_state) + self.gamma * V_copy[next_state])
-                                            for (prob, next_state) in T(state, action)) for action in self.mdp.actions)
+                                            for (prob, next_state) in T(state, action))
+                                        for action in self.mdp.actions)
                     delta = max(delta, abs(self.V[state] - V_copy[state]))
 
+            self.deltas.append(delta)
             i += 1
             print(f'Iteration {i}, delta: {delta:.6f}')
             if delta < self.epsilon:
                 break
 
+    def plot_learning_curve(self):
+        x = range(1, len(self.deltas) + 1)
+        plt.plot(x, self.deltas)
+        plt.xlabel('Iteration', fontsize=12)
+        plt.ylabel('Delta', fontsize=12)
+        plt.xticks(x)
+        plt.savefig(f'figures/vi_learning_curve.png')
+        plt.close()
+
     def get_best_policy(self):
         """Return the policy induced by the calculated V table"""
         policy = {}
         for state in self.mdp.states:
-            policy[state] = max(self.mdp.actions,
-                                key=lambda action: self.expected_return(state, action))
+            if state not in self.mdp.terminal_states:
+                policy[state] = max(self.mdp.actions,
+                                    key=lambda action: self.expected_return(state, action))
         return policy
 
     def expected_return(self, state, action):
