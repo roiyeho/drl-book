@@ -14,14 +14,13 @@ class ValueIteration:
         self.gamma = gamma
         self.epsilon = epsilon
 
-        # Initialize the V table
-        self.V = {s: 0 for s in mdp.states}
-
     def run(self):
         """Run VI to find the optimal value function"""
-        R, T = self.mdp.R, self.mdp.T
+        R, T = self.mdp.R, self.mdp.T  # Use shorter names
 
-        self.deltas = []  # Saves the delta in each iteration
+        # Initialize the V table
+        self.V = {s: 0 for s in self.mdp.states}
+        self.deltas = []  # Stores the delta in each iteration
 
         i = 0
         while True:
@@ -63,8 +62,3 @@ class ValueIteration:
         """Compute the expected return of taking action a in state s"""
         return sum(prob * (self.mdp.R(state, action, next_state) + self.gamma * self.V[next_state])
                    for (prob, next_state) in self.mdp.T(state, action))
-
-
-
-
-
