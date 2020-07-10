@@ -1,8 +1,10 @@
 import gym
+from grid_world import GridWorldEnv
 
-env = gym.make('Taxi-v3')
+#env = gym.make('Taxi-v3')
+env = GridWorldEnv()
 
-n_episodes = 10
+n_episodes = 1
 max_episode_len = 100
 
 for episode in range(n_episodes):
@@ -23,4 +25,4 @@ for episode in range(n_episodes):
             break
 
     print(f'Episode {episode + 1} finished after {step + 1} steps '
-          f'with total reward {total_reward}')
+          f'with total reward {total_reward:.3f}')

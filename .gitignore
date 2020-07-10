@@ -82,6 +82,9 @@ data/
 # Result files
 results/
 
+# Video files
+videos/
+
 # Saved networks
 *.h5
 

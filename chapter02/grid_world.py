@@ -60,8 +60,8 @@ class GridWorld(MDP):
             return self.transitions[state][action]
 
         # Compute the possible transitions from (state, action)
-        turn_right = self.actions[(action + 1) % len(self.actions)]
-        turn_left = self.actions[(action - 1) % len(self.actions)]
+        turn_right = (action + 1) % len(self.actions)
+        turn_left = (action - 1) % len(self.actions)
 
         transitions = [(0.8, self.step(state, action)),
                        (0.1, self.step(state, turn_right)),
