@@ -1,3 +1,5 @@
+# Author: Roi Yehoshua
+# Date: June 2020
 import gym
 
 print(gym.envs.registry.all())

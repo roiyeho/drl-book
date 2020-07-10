@@ -1,3 +1,5 @@
+# Author: Roi Yehoshua
+# Date: June 2020
 import numpy as np
 import gym
 from gym import spaces
@@ -89,7 +91,7 @@ class GridWorldEnv(gym.Env):
     def render(self):
         """Print the agent's location and the last action taken"""
         if self.last_action is None:
-            print(f'Agent location: {self.agent_location}')
+            print(f'Location: {self.agent_location}')
         else:
             action_meaning = self.config.action_meanings[self.last_action]
-            print(f'{action_meaning}, location: {self.agent_location}')
+            print(f'Action: {action_meaning}, location: {self.agent_location}')

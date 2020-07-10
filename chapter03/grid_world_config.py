@@ -1,7 +1,9 @@
+# Author: Roi Yehoshua
+# Date: June 2020
 class GridWorldEnvConfig():
     """Configuration settings for the grid world environment"""
     def __init__(self):
-        # Grid world dimensions
+        # Grid dimensions
         self.n_rows, self.n_columns = 5, 5
 
         # Object locations
@@ -13,17 +15,15 @@ class GridWorldEnvConfig():
         # Actions
         self.n_actions = 4
         self.directions = {
-            0: (-1, 0),  # North
-            1: (0, 1),  # East
-            2: (1, 0),  # South
-            3: (0, -1),  # West
+            0: (-1, 0),
+            1: (0, 1),
+            2: (1, 0),
+            3: (0, -1),
         }
-        self.action_meanings = ['North', 'East', 'South', 'West']
-        self.action_noise = 0.2  # Probability of going in an unintended direction
+        self.action_meanings = ['N', 'E', 'S', 'W']
+        self.action_noise = 0.2
 
         # Reward definitions
         self.gold_reward = 1.0
         self.pit_reward = -1.0
         self.living_reward = -0.05
-
-

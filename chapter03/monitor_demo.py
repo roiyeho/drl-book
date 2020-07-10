@@ -1,3 +1,5 @@
+# Author: Roi Yehoshua
+# Date: June 2020
 import gym
 
 def make_video(env, max_episode_len=100):

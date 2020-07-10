@@ -1,6 +1,7 @@
 # Author: Roi Yehoshua
 # Date: June 2020
 import numpy as np
+import pickle
 
 from grid_world import GridWorld
 from value_iteration import ValueIteration
@@ -49,5 +50,9 @@ pi.run()
 # Print the optimal policy
 print('\nBest policy:')
 grid_mdp.print_policy(pi.policy)
+
+# Save policy to file
+with open('results/policy.h5', 'wb') as file:
+    pickle.dump(pi.policy, file)
 
 
