@@ -2,6 +2,7 @@
 # Date: June 2020
 import numpy as np
 import gym
+import cv2
 from gym import spaces
 from gym.envs.registration import EnvSpec
 
@@ -88,10 +89,44 @@ class GridWorldEnv(gym.Env):
             return True
         return False
 
-    def render(self):
+    def render(self, mode='gui'):
+        if mode == 'gui':
+            self.render_graphics()
+        else:
+            self.render_text()
+
+    def render_text(self):
         """Print the agent's location and the last action taken"""
         if self.last_action is None:
             print(f'Location: {self.agent_location}')
         else:
             action_meaning = self.config.action_meanings[self.last_action]
             print(f'Action: {action_meaning}, location: {self.agent_location}')
+
+    def render_graphics(self, display_duration=1000):
+        image = self.get_grid_image()
+        cv2.imshow('Grid World', image)
+        cv2.waitKey(display_duration)
+
+    def get_grid_image(self, scale_factor=50):
+        """Generate an image of the grid environment
+        :param scale_factor: the number of times each pixel is repeated
+        :return: a 3D numpy array
+        """
+        image = np.empty((self.config.n_rows, self.config.n_columns, 3), dtype=np.uint8)
+        for i in range(self.config.n_rows):
+            for j in range(self.config.n_columns):
+                if (i, j) == self.agent_location:
+                    image[i, j] = (255, 0, 0)
+                elif (i, j) == self.config.gold_location:
+                    image[i, j] = (55, 175, 212)  # BGR of gold
+                elif (i, j) in self.config.pits:
+                    image[i, j] = (0, 0, 255)
+                elif (i, j) in self.config.obstacles:
+                    image[i, j] = (0, 0, 0)
+                else:  # a free cell
+                    image[i, j] = (255, 255, 255)
+
+        # Scale the size of the image
+        image = np.repeat(np.repeat(image, scale_factor, axis=0), scale_factor, axis=1)
+        return image

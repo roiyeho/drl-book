@@ -31,7 +31,7 @@ class CMOTP(gym.Env):
 
     def reset(self):
         # Initialize the state matrix
-        self.state = np.zeros(self.config.grid_dimensions, dtype=np.uint)
+        self.state = np.zeros(self.config.grid_dimensions, dtype=np.uint8)
 
         # Set up the obstacles, goods, and agents
         self.set_obstacles()
