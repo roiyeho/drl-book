@@ -104,12 +104,16 @@ class GridWorldEnv(gym.Env):
             print(f'Action: {action_meaning}, location: {self.agent_location}')
 
     def render_graphics(self, display_duration=1000):
-        image = self.get_grid_image()
+        if self.last_action is not None:
+            action_meaning = self.config.action_meanings[self.last_action]
+            print(f'Action: {action_meaning}')
+
+        image = self.generate_image()
         cv2.imshow('Grid World', image)
         cv2.waitKey(display_duration)
 
-    def get_grid_image(self, scale_factor=50):
-        """Generate an image of the grid environment
+    def generate_image(self, scale_factor=50):
+        """Generate a color image of the grid environment
         :param scale_factor: the number of times each pixel is repeated
         :return: a 3D numpy array
         """
