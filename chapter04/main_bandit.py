@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from bandit import MultiArmedBandit
-from bandit_agents import EpsilonGreedyAgent, UCBAgent
+from bandits.mab import MultiArmedBandit
+from bandits.epsilon_greedy_agent import EpsilonGreedyAgent
+from bandits.ucb_agent import UCBAgent
 
 def run_experiment(bandit, agent, n_steps=1000):
     """
@@ -16,13 +17,13 @@ def run_experiment(bandit, agent, n_steps=1000):
 
     for _ in range(n_steps):
         # Choose action from agent (from current Q estimate)
-        action = agent.get_action()
+        action = agent.select_action()
 
         # Pick up reward from bandit for chosen action
         reward = bandit.get_reward(action)
 
         # Update Q action-value estimates
-        agent.update_Q(action, reward)
+        agent.update_q(action, reward)
 
         # Append to history
         action_history.append(action)
@@ -38,13 +39,13 @@ if __name__ == '__main__':
     # Initialize bandit
     bandit = MultiArmedBandit(k, bandit_probs)
 
-    #epsilon = 0.1
-    #print(f'Running multi-armed bandit with k = {k} and epsilon = {epsilon}')
+    epsilon = 0.1
+    print(f'Running multi-armed bandit with k = {k} and epsilon = {epsilon}')
     c = 0.5
     print(f'Running multi-armed bandit with k = {k} and c = {c}')
 
     # Run the experiments
-    n_experiments = 1000
+    n_experiments = 100
     n_steps = 2000
 
     # Store the reward and action histories of all experiments
@@ -53,8 +54,8 @@ if __name__ == '__main__':
 
     for i in range(n_experiments):
         # Initialize the agent in the beginning of each experiment
-        #agent = EpsilonGreedyAgent(bandit, epsilon)
-        agent = UCBAgent(bandit, c)
+        agent = EpsilonGreedyAgent(bandit, epsilon)
+        #agent = UCBAgent(bandit, c)
 
         action_history, reward_history = run_experiment(bandit, agent, n_steps)
         print(f'Experiment {i + 1}/{n_experiments}')
@@ -80,7 +81,7 @@ if __name__ == '__main__':
     plt.title(f'Reward history averaged over {n_experiments} '
               f'experiments (c = {c})')
 
-    output_file = 'output/BanditRewards.png'
+    output_file = 'results/epsilon_greedy_rewards.png'
     plt.savefig(output_file)
 
     # Plot action history experiment-averaged
@@ -89,7 +90,7 @@ if __name__ == '__main__':
         action_history_sum_plot = 100 * action_history_sum[:, i] / n_experiments
         plt.plot(action_history_sum_plot,
                  linewidth=5,
-                 label=f'Machine #{i + 1}')
+                 label=f'Arm #{i + 1}')
     #plt.title(f'Action history averaged over {n_experiments} '
     #          f'experiments ($\epsilon = {epsilon}$)', fontsize=20)
     plt.title(f'Action history averaged over {n_experiments} '
@@ -102,6 +103,6 @@ if __name__ == '__main__':
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
 
-    output_file = 'output/BanditActions.png'
+    output_file = 'results/epsilon_greedy_actions.png'
     plt.savefig(output_file)
 
