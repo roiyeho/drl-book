@@ -28,7 +28,7 @@ def plot_learning_curve(training_acc, validation_acc, file_name):
     """Plot the learning curve with the accuracy on the training and validation sets
     :param training_acc: the accuracy on the training set
     :param validation_acc: the accuracy on the validation set
-    :file_name the name of the file where the figure will be saved
+    :param file_name the name of the file where the figure will be saved
     :return:
     """
     x = range(1, len(training_acc) + 1)

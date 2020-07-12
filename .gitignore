@@ -82,6 +82,9 @@ data/
 # Result files
 results/
 
+# Figures
+figures/
+
 # Video files
 videos/
 

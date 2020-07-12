@@ -3,6 +3,19 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.patches as mpatches
 
+def plot_rewards(rewards, file_name, display_interval=10):
+    """Plot the learning curve
+    :param rewards: XXX
+    :param file_name: the file where the figure will be saved
+    :return:
+    """
+    x = range(1, len(rewards) + 1, display_interval)
+    plt.plot(x, rewards[::display_interval])
+    plt.xlabel('Epoch', fontsize=12)
+    plt.ylabel('Average Reward', fontsize=12)
+    plt.savefig(f'figures/{file_name}.png')
+    plt.close()
+
 def plot_blackjack_values(V, filename):
     def get_figure(ax, usable_ace):
         x_range = np.arange(11, 22)
