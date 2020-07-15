@@ -4,15 +4,28 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.patches as mpatches
 
 def plot_rewards(rewards, file_name, display_interval=10):
-    """Plot the learning curve
-    :param rewards: XXX
+    """Plot average reward for each time step
+    :param rewards: reward received at each step
     :param file_name: the file where the figure will be saved
-    :return:
     """
     x = range(1, len(rewards) + 1, display_interval)
     plt.plot(x, rewards[::display_interval])
-    plt.xlabel('Epoch', fontsize=12)
+    plt.xlabel('Step', fontsize=12)
     plt.ylabel('Average Reward', fontsize=12)
+    plt.savefig(f'figures/{file_name}.png')
+    plt.close()
+
+def plot_actions(actions, n_arms, n_games, file_name):
+    """Plot the average number of times each action was chosen"""
+    for i in range(n_arms):
+        # Compute the average number of times each action was chosen in each step
+        action_count_avg = 100 * actions[:, i] / n_games
+        plt.plot(action_count_avg, linewidth=2, label=f'Arm {i + 1}')
+
+    plt.xlabel('Step', fontsize=12)
+    plt.ylabel('% of choosing the action', fontsize=12)
+    plt.legend(ncol=4, shadow=True)
+    plt.ylim([0, 100])
     plt.savefig(f'figures/{file_name}.png')
     plt.close()
 

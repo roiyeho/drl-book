@@ -2,7 +2,7 @@ import numpy as np
 from collections import defaultdict
 
 class MCPredictV():
-    def __init__(self, env, policy, gamma=0.95, n_episodes=10000, max_episode_len=100):
+    def __init__(self, env, policy, gamma=0.95, n_episodes=100000, max_episode_len=100):
         self.env = env
         self.policy = policy
         self.gamma = gamma

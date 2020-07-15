@@ -14,8 +14,8 @@ class EpsilonGreedyAgent(BanditAgent):
 
     def select_action(self):
         if np.random.rand() < self.epsilon:
-            # Select a random arm
+            # Exploration: select a random arm
             return np.random.randint(self.bandit.n_arms)
         else:
-            # Exploit the currently best arm
+            # Exploitation: choose the currently best arm
             return np.argmax(self.Q)
