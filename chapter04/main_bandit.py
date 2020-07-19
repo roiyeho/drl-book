@@ -1,7 +1,6 @@
 # Author: Roi Yehoshua
 # Date: July 2020
 import numpy as np
-import matplotlib.pyplot as plt
 
 from mab import MultiArmedBandit
 from epsilon_greedy_agent import EpsilonGreedyAgent
@@ -37,7 +36,7 @@ def run_experiment(bandit, agent, n_games=1000, n_steps=1000):
     :param agent: an agent trying to solve the problem
     :param n_games: number of games to run
     :param n_steps: number of time steps in each game
-    :return: average rewards and average count of the actions
+    :return: average reward and average count of the actions
     """
     # Store the rewards and actions of all the games
     reward_history = np.zeros(n_steps)
@@ -86,9 +85,3 @@ rewards, actions = run_experiment(bandit, agent)
 plot_utils.plot_rewards(rewards, file_name='ucb_rewards')
 plot_utils.plot_actions(actions, n_arms=10, n_games=1000,
                         file_name='ucb_actions')
-
-for i in range(len(rewards)):
-    print(i, rewards[i])
-
-for i in range(len(actions)):
-    print(i, actions[i])
