@@ -3,10 +3,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from mab import MultiArmedBandit
-from epsilon_greedy_agent import EpsilonGreedyAgent
-from decaying_epsilon_agent import DecayingEpsilonGreedyAgent
-from ucb_agent import UCBAgent
+from bandits.mab import MultiArmedBandit
+from bandits.epsilon_greedy_agent import EpsilonGreedyAgent
+from bandits.decaying_epsilon_agent import DecayingEpsilonGreedyAgent
+from bandits.ucb_agent import UCBAgent
 import plot_utils
 
 def run_bandit(bandit, agent, n_steps):
