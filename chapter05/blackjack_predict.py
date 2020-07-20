@@ -1,5 +1,5 @@
 import gym
-from mc_predict import MCPredict
+from mc_predicy_q import MCPredict
 from plot_utils import plot_blackjack_values
 
 STICK = 0
