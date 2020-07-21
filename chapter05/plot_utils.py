@@ -34,19 +34,18 @@ def plot_blackjack_values(V):
         Z = np.array(Z).reshape(X.shape)
 
         ax.plot_surface(X, Y, Z, cmap=plt.cm.coolwarm)
-        ax.set_xlabel("Player's current sum", fontsize=12)
-        ax.set_ylabel("Dealer's showing card", fontsize=12)
-        ax.set_zlabel('State value', fontsize=12)
+        ax.set_xlabel("Player's sum")
+        ax.set_ylabel("Dealer's showing card")
+        ax.set_zlabel('State value')
         ax.view_init(ax.elev, -120)
 
-    #fig = plt.figure(figsize=(12, 12))
-    fig = plt.figure(figsize=(14, 14))
+    fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(211, projection='3d')
-    ax.set_title('No usable ace', fontsize=12)
+    ax.set_title('No usable ace')
     get_figure(ax, False)
 
     ax = fig.add_subplot(212, projection='3d')
-    ax.set_title('Usable ace', fontsize=12)
+    ax.set_title('Usable ace')
     get_figure(ax, True)
 
     output_file = f'figures/blackjack_state_values.png'
@@ -65,7 +64,7 @@ def plot_policy(Q):
         ax.grid()
         ax.set_xticks(x_range)
         ax.set_yticks(y_range)
-        ax.set_xlabel("Player's current sum")
+        ax.set_xlabel("Player's sum")
         ax.set_ylabel("Dealer's showing card")
 
         # Create a legend for the colors used by imshow
