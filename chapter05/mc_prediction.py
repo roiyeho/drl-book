@@ -2,7 +2,7 @@
 # Date: July 2020
 from collections import defaultdict
 
-class MCPredictV():
+class MCPrediction():
     """Monte-Carlo prediction for estimating the state value function"""
     def __init__(self, env, policy, gamma, n_episodes, max_episode_len):
         """

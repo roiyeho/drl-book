@@ -1,5 +1,5 @@
 import gym
-from mc_predict_v import MCPredictV
+from mc_prediction import MCPrediction
 from plot_utils import plot_blackjack_values
 
 class StickOn17Policy():
@@ -16,7 +16,7 @@ env = gym.make('Blackjack-v0')
 #print(state)
 
 policy = StickOn17Policy()
-blackjack_mc = MCPredictV(env, policy, gamma=1, n_episodes=500000, max_episode_len=10)
+blackjack_mc = MCPrediction(env, policy, gamma=1, n_episodes=500000, max_episode_len=10)
 
 V = blackjack_mc.predict()
 plot_blackjack_values(V)

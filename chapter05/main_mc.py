@@ -2,7 +2,7 @@ import pickle
 
 from grid_world import GridWorldEnv
 from grid_world_config import GridWorldEnvConfig
-from mc_predict_v import MCPredictV
+from mc_prediction import MCPrediction
 
 class GridWorldPolicy():
     def __init__(self, filename):
@@ -14,7 +14,7 @@ class GridWorldPolicy():
 
 env = GridWorldEnv(GridWorldEnvConfig())
 policy = GridWorldPolicy(filename='grid_policy.h5')
-mc_predict = MCPredictV(env, policy, gamma=0.95, n_episodes=100000, max_episode_len=100)
+mc_predict = MCPrediction(env, policy, gamma=0.95, n_episodes=100000, max_episode_len=100)
 
 V = mc_predict.predict()
 print()
