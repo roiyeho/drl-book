@@ -16,7 +16,7 @@ env = gym.make('Blackjack-v0')
 #print(state)
 
 policy = StickOn17Policy()
-blackjack_mc = MCPredictV(env, policy, gamma=1, n_episodes=500000, max_episode_len=10)
+blackjack_mc = MCPredictV(env, policy, gamma=1, n_episodes=50000, max_episode_len=10)
 
 V = blackjack_mc.predict()
 plot_blackjack_values(V)

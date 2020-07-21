@@ -39,14 +39,16 @@ def plot_blackjack_values(V):
         ax.set_zlabel('State value', fontsize=12)
         ax.view_init(ax.elev, -120)
 
-    fig = plt.figure(figsize=(12, 12))
+    #fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=(14, 14))
     ax = fig.add_subplot(211, projection='3d')
+    ax.set_title('No usable ace', fontsize=12)
+    get_figure(ax, False)
+
+    ax = fig.add_subplot(212, projection='3d')
     ax.set_title('Usable ace', fontsize=12)
     get_figure(ax, True)
 
-    ax = fig.add_subplot(212, projection='3d')
-    ax.set_title('No usable ace', fontsize=12)
-    get_figure(ax, False)
     output_file = f'figures/blackjack_state_values.png'
     plt.savefig(output_file)
 

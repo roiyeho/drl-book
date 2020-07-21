@@ -13,7 +13,7 @@ class GridWorldPolicy():
         return self.policy[state]
 
 env = GridWorldEnv(GridWorldEnvConfig())
-policy = GridWorldPolicy(filename='policy.h5')
+policy = GridWorldPolicy(filename='grid_policy.h5')
 mc_predict = MCPredictV(env, policy, gamma=0.95, n_episodes=100000, max_episode_len=100)
 
 V = mc_predict.predict()

@@ -62,7 +62,7 @@ def run_policy(env, policy, n_episodes=10, max_episode_len=100):
 env = GridWorldEnv(config=GridWorldEnvConfig())
 #run_environment(env, n_episodes=1)
 
-with open('policy.h5', 'rb') as file:
+with open('grid_policy.h5', 'rb') as file:
     policy = pickle.load(file)
 run_policy(env, policy, n_episodes=1)
 
