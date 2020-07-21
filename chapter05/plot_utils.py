@@ -23,33 +23,7 @@ def plot_circle():
     plt.scatter(x, y, color=c)
     fig.savefig('figures/computing_pi.png')
 
-def plot_rewards(rewards, file_name, display_interval=10):
-    """Plot average reward for each time step
-    :param rewards: reward received at each step
-    :param file_name: the file where the figure will be saved
-    """
-    x = range(1, len(rewards) + 1, display_interval)
-    plt.plot(x, rewards[::display_interval])
-    plt.xlabel('Step', fontsize=12)
-    plt.ylabel('Average Reward', fontsize=12)
-    plt.savefig(f'figures/{file_name}.png')
-    plt.close()
-
-def plot_actions(actions, n_arms, n_games, file_name):
-    """Plot the average number of times each action was chosen"""
-    for i in range(n_arms):
-        # Compute the average number of times each action was chosen in each step
-        action_count_avg = 100 * actions[:, i] / n_games
-        plt.plot(action_count_avg, linewidth=2, label=f'Arm {i + 1}')
-
-    plt.xlabel('Step', fontsize=12)
-    plt.ylabel('% of choosing the action', fontsize=12)
-    plt.legend(shadow=True)
-    plt.ylim([0, 100])
-    plt.savefig(f'figures/{file_name}.png')
-    plt.close()
-
-def plot_blackjack_values(V, filename):
+def plot_blackjack_values(V):
     def get_figure(ax, usable_ace):
         x_range = np.arange(11, 22)
         y_range = np.arange(1, 11)
@@ -60,23 +34,23 @@ def plot_blackjack_values(V, filename):
         Z = np.array(Z).reshape(X.shape)
 
         ax.plot_surface(X, Y, Z, cmap=plt.cm.coolwarm)
-        ax.set_xlabel("Player's current sum")
-        ax.set_ylabel("Dealer's showing card")
-        ax.set_zlabel('State value')
+        ax.set_xlabel("Player's current sum", fontsize=12)
+        ax.set_ylabel("Dealer's showing card", fontsize=12)
+        ax.set_zlabel('State value', fontsize=12)
         ax.view_init(ax.elev, -120)
 
     fig = plt.figure(figsize=(12, 12))
     ax = fig.add_subplot(211, projection='3d')
-    ax.set_title('Usable ace')
+    ax.set_title('Usable ace', fontsize=12)
     get_figure(ax, True)
 
     ax = fig.add_subplot(212, projection='3d')
-    ax.set_title('No usable ace')
+    ax.set_title('No usable ace', fontsize=12)
     get_figure(ax, False)
-    output_file = f'output/{filename}'
+    output_file = f'figures/blackjack_state_values.png'
     plt.savefig(output_file)
 
-def plot_policy(Q, filename):
+def plot_policy(Q):
     def get_figure(usable_ace, ax):
         x_range = np.arange(11, 22)
         y_range = np.arange(10, 0, -1)
@@ -105,5 +79,5 @@ def plot_policy(Q, filename):
     ax2.set_title('No usable ace')
     get_figure(False, ax2)
 
-    output_file = f'output/{filename}'
+    output_file = f'figures/{filename}'
     plt.savefig(output_file)
