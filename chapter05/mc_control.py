@@ -1,60 +1,86 @@
+# Author: Roi Yehoshua
+# Date: July 2020
 import numpy as np
 from collections import defaultdict
 
 class MCControl():
-    def __init__(self, env, epsilon, gamma):
+    """Monte Carlo control for finding an optimal policy"""
+    def __init__(self, env, epsilon, gamma, n_episodes, max_episode_len=None):
+        """
+        :param env: an instance of gym environment
+        :param epsilon: the exploration rate
+        :param gamma: the discount factor
+        :param n_episodes: number of episodes to use for evaluation
+        :param max_episode_len: maximum number of steps per episode
+        """
         self.env = env
         self.epsilon = epsilon
         self.gamma = gamma
-        self.N = defaultdict(lambda: np.zeros(env.action_space.n))
-        self.returns = defaultdict(lambda: np.zeros(env.action_space.n))
-        self.Q = defaultdict(lambda: np.zeros(env.action_space.n))
+        self.n_episodes = n_episodes
+        self.max_episode_len = max_episode_len
 
-    def find_best_policy(self, n_episodes):
-        for i in range(1, n_episodes + 1):
-            if i % 1000 == 0:
-                print(f'\rEpisode {i}/{n_episodes}', end='')
-            episode = self.run_episode()
-            self.update_Q(episode)
+        n_actions = env.action_space.n
+        self.N = defaultdict(lambda: np.zeros(n_actions))  # state-action visitations count
+        self.returns = defaultdict(lambda: np.zeros(n_actions))  # sum of returns
+        self.Q = defaultdict(lambda: np.zeros(n_actions))  # the value function
+
+    def find_best_policy(self):
+        """Find the optimal policy and action value function
+        :return: the optimal Q table
+        """
+        for episode in range(self.n_episodes):
+            transitions = self.run_episode()
+            self.update_q(transitions)
+
+            if (episode + 1) % 1000 == 0:
+                print(f'\rEpisode {episode + 1}/{self.n_episodes}', end='')
         return self.Q
 
     def run_episode(self):
-        """Run a single episode on the environment using the given policy. Returns a list of all the
-           states, actions, and rewards of each time step in the episode."""
-        episode = []
-        state = self.env.reset()
+        """Run a single episode on the environment using the given policy
+        :return: a list of (state, action, reward) tuples
+        """
+        transitions = []
+        done = False
+        step = 0
 
-        while True:
+        state = self.env.reset()
+        while not done:
             action = self.get_action(state)
             next_state, reward, done, _ = self.env.step(action)
-            episode.append((state, action, reward))
-            if done:
-                break
+            transitions.append((state, action, reward))
             state = next_state
-        return episode
+
+            step += 1
+            if self.max_episode_len and step > self.max_episode_len:
+                break
+        return transitions
 
     def get_action(self, state):
-        """ Implement an epsilon-greedy policy based on the current Q values"""
+        """Use an epsilon-greedy policy to select an action
+        :param state: current state
+        :return: the selected action
+        """
         if np.random.rand() <= self.epsilon:
             action = np.random.choice(self.env.action_space.n)
         else:
             action = np.argmax(self.Q[state])
         return action
 
-    def update_Q(self, episode):
-        G = 0
-        returns = {}
+    def update_q(self, transitions):
+        """Update the Q table using the given transitions
+        :param transitions: list of (state, reward) pairs
+        """
+        G = 0  # the return
 
         # Compute the returns backwards from the last time step to the first
-        for s, a, r in reversed(episode):
-            G = self.gamma * G + r
-            # Backing up replaces (s, a) eventually, so we get first-visit returns
-            returns[(s, a)] = G
+        for state, action, reward in reversed(transitions):
+            G = self.gamma * G + reward
+            self.N[state][action] += 1
+            self.returns[state][action] += G
+            self.Q[state][action] = self.returns[state][action] / self.N[state][action]
 
-        for (s, a), G in returns.items():
-            self.N[s][a] += 1
-            self.returns[s][a] += G
-            self.Q[s][a] = self.returns[s][a] / self.N[s][a]
+
 
 
 

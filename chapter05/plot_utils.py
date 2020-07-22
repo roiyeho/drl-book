@@ -51,7 +51,7 @@ def plot_blackjack_values(V):
     output_file = f'figures/blackjack_state_values.png'
     plt.savefig(output_file)
 
-def plot_policy(Q):
+def plot_blackjack_policy(Q):
     def get_figure(usable_ace, ax):
         x_range = np.arange(11, 22)
         y_range = np.arange(10, 0, -1)
@@ -80,5 +80,5 @@ def plot_policy(Q):
     ax2.set_title('No usable ace')
     get_figure(False, ax2)
 
-    output_file = f'figures/{filename}'
+    output_file = f'figures/blackjack_optimal_policy.png'
     plt.savefig(output_file)

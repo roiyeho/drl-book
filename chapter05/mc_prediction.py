@@ -3,8 +3,8 @@
 from collections import defaultdict
 
 class MCPrediction():
-    """Monte-Carlo prediction for estimating the state value function"""
-    def __init__(self, env, policy, gamma, n_episodes, max_episode_len):
+    """Monte Carlo prediction for estimating the state value function"""
+    def __init__(self, env, policy, gamma, n_episodes, max_episode_len=None):
         """
         :param env: an instance of gym environment
         :param policy: an object that implements a get_action() method
@@ -39,15 +39,19 @@ class MCPrediction():
         :return: a list of (state, reward) pairs
         """
         transitions = []
-        state = self.env.reset()
+        done = False
+        step = 0
 
-        for step in range(self.max_episode_len):
+        state = self.env.reset()
+        while not done:
             action = self.policy.get_action(state)
             next_state, reward, done, _ = self.env.step(action)
             transitions.append((state, reward))
-            if done:
-                break
             state = next_state
+
+            step += 1
+            if self.max_episode_len and step > self.max_episode_len:
+                break
         return transitions
 
     def update_v(self, transitions):
