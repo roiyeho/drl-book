@@ -9,7 +9,7 @@ class MCPrediction():
         :param env: an instance of gym environment
         :param policy: an object that implements a get_action() method
         :param gamma: the discount factor
-        :param n_episodes: number of episodes to use for evaluation
+        :param n_episodes: number of episodes to sample
         :param max_episode_len: maximum number of steps per episode
         """
         self.env = env
@@ -30,6 +30,7 @@ class MCPrediction():
             transitions = self.run_episode()
             self.update_v(transitions)
 
+            # Print out which episode we're on
             if (episode + 1) % 1000 == 0:
                 print(f'\rEpisode {episode + 1}/{self.n_episodes}', end='')
         return self.V
@@ -58,7 +59,7 @@ class MCPrediction():
         """Update the V table using the given transitions
         :param transitions: list of (state, reward) pairs
         """
-        G = 0  # the return
+        G = 0  # the return (sum of discounted rewards)
 
         # Compute the returns backwards from the last time step to the first
         for state, reward in reversed(transitions):

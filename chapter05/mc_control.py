@@ -10,7 +10,7 @@ class MCControl():
         :param env: an instance of gym environment
         :param epsilon: the exploration rate
         :param gamma: the discount factor
-        :param n_episodes: number of episodes to use for evaluation
+        :param n_episodes: number of episodes to sample
         :param max_episode_len: maximum number of steps per episode
         """
         self.env = env
@@ -22,22 +22,23 @@ class MCControl():
         n_actions = env.action_space.n
         self.N = defaultdict(lambda: np.zeros(n_actions))  # state-action visitations count
         self.returns = defaultdict(lambda: np.zeros(n_actions))  # sum of returns
-        self.Q = defaultdict(lambda: np.zeros(n_actions))  # the value function
+        self.Q = defaultdict(lambda: np.zeros(n_actions))  # the action-value function
 
     def find_best_policy(self):
-        """Find the optimal policy and action value function
-        :return: the optimal Q table
+        """Find the optimal action values and thereby the optimal policy
+        :return: the optimal Q function
         """
         for episode in range(self.n_episodes):
             transitions = self.run_episode()
             self.update_q(transitions)
 
+            # Print out which episode we're on
             if (episode + 1) % 1000 == 0:
                 print(f'\rEpisode {episode + 1}/{self.n_episodes}', end='')
         return self.Q
 
     def run_episode(self):
-        """Run a single episode on the environment using the given policy
+        """Run a single episode on the environment using the current policy
         :return: a list of (state, action, reward) tuples
         """
         transitions = []
@@ -46,6 +47,7 @@ class MCControl():
 
         state = self.env.reset()
         while not done:
+            # Sample an action from our policy
             action = self.get_action(state)
             next_state, reward, done, _ = self.env.step(action)
             transitions.append((state, action, reward))
@@ -58,7 +60,7 @@ class MCControl():
 
     def get_action(self, state):
         """Use an epsilon-greedy policy to select an action
-        :param state: current state
+        :param state: the current state
         :return: the selected action
         """
         if np.random.rand() <= self.epsilon:
@@ -68,16 +70,19 @@ class MCControl():
         return action
 
     def update_q(self, transitions):
-        """Update the Q table using the given transitions
-        :param transitions: list of (state, reward) pairs
+        """Update the Q table using the episode's transitions
+        :param transitions: list of (state, action, reward) tuples
         """
-        G = 0  # the return
+        G = 0  # the return (sum of discounted rewards)
 
         # Compute the returns backwards from the last time step to the first
         for state, action, reward in reversed(transitions):
+            # Update the return
             G = self.gamma * G + reward
             self.N[state][action] += 1
             self.returns[state][action] += G
+
+            # Update the Q function, which also improves our current policy
             self.Q[state][action] = self.returns[state][action] / self.N[state][action]
 
 
