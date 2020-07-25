@@ -22,7 +22,7 @@ class MCPrediction():
         self.returns = defaultdict(lambda: 0)  # sum of returns
         self.V = defaultdict(lambda: 0)   # the value function
 
-    def predict(self):
+    def estimate_value(self):
         """Estimate the state value function of the policy
         :return: the value function
         """

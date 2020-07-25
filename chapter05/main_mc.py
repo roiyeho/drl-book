@@ -1,21 +1,12 @@
-import pickle
-
-from grid_world import GridWorldEnv
-from grid_world_config import GridWorldEnvConfig
+from grid_world.env import GridWorldEnv
+from grid_world.config import GridWorldEnvConfig
+from grid_world.policy import GridWorldPolicy
 from mc_prediction import MCPrediction
 
-class GridWorldPolicy():
-    def __init__(self, filename):
-        with open(filename, 'rb') as file:
-            self.policy = pickle.load(file)
-
-    def get_action(self, state):
-        return self.policy[state]
-
 env = GridWorldEnv(GridWorldEnvConfig())
-policy = GridWorldPolicy(filename='grid_policy.h5')
+policy = GridWorldPolicy(filename='grid_world/grid_policy.h5')
 mc_predict = MCPrediction(env, policy, gamma=0.95, n_episodes=100000, max_episode_len=100)
 
-V = mc_predict.predict()
+V = mc_predict.estimate_value()
 print()
 env.print_values(V)
